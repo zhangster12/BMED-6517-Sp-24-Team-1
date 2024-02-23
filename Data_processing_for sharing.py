@@ -36,28 +36,28 @@ Subj.sort()
 
 dataframes_MI = []
 dataframes_Ht = []
-sub_MI = -1;
-sub_Ht = -1;
+sub_MI = -1
+sub_Ht = -1
 for sub in range(NumSub):
     if str(round(Subj[sub])) in subj_list:
         if str(Subj[sub]).startswith('3'):
-            sub_MI = sub_MI+1;
+            sub_MI = sub_MI + 1
             dataframes_MI.append([]) 
             for stim in range(NumStim):
                 dataframes_MI[sub_MI].append([]) 
                 for feat in range(NumFeat):
                     dataframes_MI[sub_MI][stim].append([]) 
-                    Feat_load = os.path.join(Dir1, 'sub' + str(int(Subj[sub])), 'stim' + str(stim) + '_' + Feature[feat] + '.csv');
+                    Feat_load = os.path.join(Dir1, 'sub' + str(int(Subj[sub])), 'stim' + str(stim) + '_' + Feature[feat] + '.csv')
                     data = pd.read_csv(Feat_load)
                     dataframes_MI[sub_MI][stim][feat] = data.values
         if str(Subj[sub]).startswith('6'):
-            sub_Ht = sub_Ht+1;
+            sub_Ht = sub_Ht + 1
             dataframes_Ht.append([])
             for stim in range(NumStim):
                 dataframes_Ht[sub_Ht].append([])
                 for feat in range(NumFeat):
                     dataframes_Ht[sub_Ht][stim].append([])
-                    Feat_load = os.path.join(Dir1, 'sub' + str(int(Subj[sub])), 'stim' + str(stim) + '_' + Feature[feat] + '.csv');
+                    Feat_load = os.path.join(Dir1, 'sub' + str(int(Subj[sub])), 'stim' + str(stim) + '_' + Feature[feat] + '.csv')
                     data = pd.read_csv(Feat_load)
                     dataframes_Ht[sub_Ht][stim][feat] = data.values
 
