@@ -7,9 +7,9 @@ Created on Mon Feb 19 22:49:51 2024
 
 ## Parameter initialization (clear all)
 from IPython import get_ipython
-get_ipython().magic('reset -sf')
+#get_ipython().magic('reset -sf')
 
-Dir1 = '\Consolidated_Features'
+Dir1 = 'Consolidated_Features'
 import os
 import pandas as pd
 import scipy.io as sio
@@ -27,6 +27,7 @@ NumStim = 5
 Stimulus = ['Rest', 'Reading', 'SpeechPrep', 'Speech', 'Recovery']
 NumFeat = 5
 Feature = ['HR', 'PAT', 'PEP', 'PPGamp', 'PTTrecip']
+
 # 1st column: time, second column: feature values
 Subj = np.zeros(len(Subject))
 for i in range(len(Subject)):
@@ -38,23 +39,31 @@ dataframes_MI = []
 dataframes_Ht = []
 sub_MI = -1
 sub_Ht = -1
+
 for sub in range(NumSub):
+
     if str(round(Subj[sub])) in subj_list:
+
         if str(Subj[sub]).startswith('3'):
             sub_MI = sub_MI + 1
             dataframes_MI.append([]) 
+
             for stim in range(NumStim):
-                dataframes_MI[sub_MI].append([]) 
+                dataframes_MI[sub_MI].append([])
+
                 for feat in range(NumFeat):
                     dataframes_MI[sub_MI][stim].append([]) 
                     Feat_load = os.path.join(Dir1, 'sub' + str(int(Subj[sub])), 'stim' + str(stim) + '_' + Feature[feat] + '.csv')
                     data = pd.read_csv(Feat_load)
                     dataframes_MI[sub_MI][stim][feat] = data.values
+
         if str(Subj[sub]).startswith('6'):
             sub_Ht = sub_Ht + 1
             dataframes_Ht.append([])
+
             for stim in range(NumStim):
                 dataframes_Ht[sub_Ht].append([])
+                
                 for feat in range(NumFeat):
                     dataframes_Ht[sub_Ht][stim].append([])
                     Feat_load = os.path.join(Dir1, 'sub' + str(int(Subj[sub])), 'stim' + str(stim) + '_' + Feature[feat] + '.csv')
