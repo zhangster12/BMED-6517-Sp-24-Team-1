@@ -111,9 +111,8 @@ for i, feature in enumerate(Feature):
     time_MI, feat_MI = join_stimulus(dataframes_MI, 3, i)
     axes[i, 1].plot(time_MI, feat_MI)
 
-axes[4, 0].set_xlabel('Time')
-axes[4, 1].set_xlabel('Time')
-
+fig.supxlabel('Time')
+plt.tight_layout()
 plt.show()
 
 # Individual stimulus
@@ -127,4 +126,6 @@ for i, feature in enumerate(Feature):
         time_Ht, feat_Ht = access_df(dataframes_Ht, 1, j, i)
         axes[i, j].plot(time_Ht, feat_Ht)
 
+fig.supxlabel('Time')
+plt.tight_layout()
 plt.show()
