@@ -97,23 +97,21 @@ def join_stimulus(df, participant_index, feature_index):
 
     return time, feat_values
 
-fig, axes = plt.subplots(len(Feature), 2, figsize=(20, 25))
+# Compare healthy and unhealthy
+fig, axes = plt.subplots(len(Feature), 2, figsize=(25, 25), sharex=True, sharey='row')
+
+axes[0, 0].set_title('Healthy')
+axes[0, 1].set_title('Post-MI')
 
 for i, feature in enumerate(Feature):
-    time_Ht, feat_Ht = join_stimulus(dataframes_Ht, 0, i)
+    time_Ht, feat_Ht = join_stimulus(dataframes_Ht, 1, i)
     axes[i, 0].plot(time_Ht, feat_Ht)
-    axes[i, 0].set_title(f'{feature} (Healthy)')
     axes[i, 0].set_ylabel(feature)
 
-    time_MI, feat_MI = join_stimulus(dataframes_MI, 0, i)
+    time_MI, feat_MI = join_stimulus(dataframes_MI, 3, i)
     axes[i, 1].plot(time_MI, feat_MI)
-    axes[i, 1].set_title(f'{feature} (Unhealthy)')
-    axes[i, 1].set_xlabel('Time')
-    axes[i, 1].set_ylabel(feature)
 
-for i in range(4):
-    axes[i, 0].xticks([])
-    axes[i, 1].xticks([])
-
+axes[4, 0].set_xlabel('Time')
+axes[4, 1].set_xlabel('Time')
 
 plt.show()
