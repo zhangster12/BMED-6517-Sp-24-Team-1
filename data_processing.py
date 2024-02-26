@@ -23,6 +23,7 @@ subj_list = [
     "3140", "3141", "3142", "3143", "3147", "3148", "3149", "3150", "3151", "3152", 
     "3153", "3154", "3155", "3156", "3158", "3159", "3160", "3162", "6037", "6038", 
     "6043", "6044", "6045", "6046", "6047", "6048", "6049"]
+
 NumStim = 5
 Stimulus = ['Rest', 'Reading', 'SpeechPrep', 'Speech', 'Recovery']
 NumFeat = 5
@@ -30,10 +31,11 @@ Feature = ['HR', 'PAT', 'PEP', 'PPGamp', 'PTTrecip']
 
 # 1st column: time, second column: feature values
 Subj = np.zeros(len(Subject))
-for i in range(len(Subject)):
-    Subj[i] = int(Subject[i][3:])  
-Subj.sort()
 
+for i in range(len(Subject)):
+    Subj[i] = int(Subject[i][3:])
+
+Subj.sort()
 
 dataframes_MI = []
 dataframes_Ht = []
@@ -71,4 +73,28 @@ for sub in range(NumSub):
                     dataframes_Ht[sub_Ht][stim][feat] = data.values
 
 # %% Data visualize
+import matplotlib.pyplot as plt
 
+participant_index = 0  # Healthy participant 1
+stimulus_index = 1     # Reading stimulus
+feature_index = 1      # PAT feature
+
+# Access PAT data
+pat_data = dataframes_Ht[participant_index][stimulus_index][feature_index]
+
+# Extract time and PAT values
+time = pat_data[:, 0]
+pat_values = pat_data[:, 1]
+
+# Plot PAT during reading for healthy participant 1
+plt.figure(figsize=(10, 6))
+plt.plot(time, pat_values, color='blue')
+plt.title('Pulse Arrival Time (PAT) during Reading for Healthy Participant 1')
+plt.xlabel('Time')
+plt.ylabel('PAT')
+plt.grid(True)
+plt.show()
+
+
+fig, axes = plt.subplots(5, 2, figsize=(20, 25))
+plt.show()
