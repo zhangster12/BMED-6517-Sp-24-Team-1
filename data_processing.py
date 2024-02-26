@@ -75,26 +75,45 @@ for sub in range(NumSub):
 # %% Data visualize
 import matplotlib.pyplot as plt
 
-participant_index = 0  # Healthy participant 1
-stimulus_index = 1     # Reading stimulus
-feature_index = 1      # PAT feature
+def access_df(df, participant_index, stimulus_index, feature_index):
+    data = df[participant_index][stimulus_index][feature_index]
+    time = data[:, 0]
+    feat_values = data[:, 1]
+    return time, feat_values
 
-# Access PAT data
-pat_data = dataframes_Ht[participant_index][stimulus_index][feature_index]
+def join_stimulus(df, participant_index, feature_index):
+    time = []
+    feat_values = []
 
-# Extract time and PAT values
-time = pat_data[:, 0]
-pat_values = pat_data[:, 1]
+    for stimulus_index in range(NumStim):
+        data = df[participant_index][stimulus_index][feature_index]
+        time_temp = data[:, 0]
+        values = data[:, 1]
+        time.append(time_temp)
+        feat_values.append(values)
+    
+    time = np.concatenate(time)
+    feat_values = np.concatenate(feat_values)
 
-# Plot PAT during reading for healthy participant 1
-plt.figure(figsize=(10, 6))
-plt.plot(time, pat_values, color='blue')
-plt.title('Pulse Arrival Time (PAT) during Reading for Healthy Participant 1')
-plt.xlabel('Time')
-plt.ylabel('PAT')
-plt.grid(True)
-plt.show()
+    return time, feat_values
+
+fig, axes = plt.subplots(len(Feature), 2, figsize=(20, 25))
+
+for i, feature in enumerate(Feature):
+    time_Ht, feat_Ht = join_stimulus(dataframes_Ht, 0, i)
+    axes[i, 0].plot(time_Ht, feat_Ht)
+    axes[i, 0].set_title(f'{feature} (Healthy)')
+    axes[i, 0].set_ylabel(feature)
+
+    time_MI, feat_MI = join_stimulus(dataframes_MI, 0, i)
+    axes[i, 1].plot(time_MI, feat_MI)
+    axes[i, 1].set_title(f'{feature} (Unhealthy)')
+    axes[i, 1].set_xlabel('Time')
+    axes[i, 1].set_ylabel(feature)
+
+for i in range(4):
+    axes[i, 0].xticks([])
+    axes[i, 1].xticks([])
 
 
-fig, axes = plt.subplots(5, 2, figsize=(20, 25))
 plt.show()
