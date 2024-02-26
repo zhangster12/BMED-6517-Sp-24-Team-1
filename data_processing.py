@@ -115,3 +115,16 @@ axes[4, 0].set_xlabel('Time')
 axes[4, 1].set_xlabel('Time')
 
 plt.show()
+
+# Individual stimulus
+
+fig, axes = plt.subplots(len(Feature), len(Stimulus), sharex='col', sharey='row')
+
+for i, feature in enumerate(Feature):
+    axes[i, 0].set_ylabel(feature)
+
+    for j, stim in enumerate(Stimulus):
+        time_Ht, feat_Ht = access_df(dataframes_Ht, 1, j, i)
+        axes[i, j].plot(time_Ht, feat_Ht)
+
+plt.show()
