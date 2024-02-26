@@ -98,7 +98,7 @@ def join_stimulus(df, participant_index, feature_index):
     return time, feat_values
 
 # Compare healthy and unhealthy
-fig, axes = plt.subplots(len(Feature), 2, figsize=(25, 25), sharex=True, sharey='row')
+fig, axes = plt.subplots(len(Feature), 2, sharex=True, sharey='row')
 
 axes[0, 0].set_title('Healthy')
 axes[0, 1].set_title('Post-MI')
