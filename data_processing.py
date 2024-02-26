@@ -124,7 +124,11 @@ for i, feature in enumerate(Feature):
 
     for j, stim in enumerate(Stimulus):
         time_Ht, feat_Ht = access_df(dataframes_Ht, 1, j, i)
+        time_MI, feat_MI = access_df(dataframes_MI, 3, j, i)
+
         axes[i, j].plot(time_Ht, feat_Ht)
+        axes[i, j].plot(time_MI, feat_MI)
+
         axes[len(Feature) - 1, j].set_xlabel(stim)
 
 fig.supxlabel('Time')
