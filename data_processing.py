@@ -134,7 +134,7 @@ for i, feature in enumerate(Feature):
 
 fig.supxlabel('Time (s)')
 
-fig.legend(['Healthy', 'Post-MI'], loc='upper center', ncols=2)
+fig.legend(['Healthy', 'Post-MI'], loc='upper center', ncols=2, framealpha=1)
 
 plt.tight_layout()
 plt.savefig('Figure_2.png')
