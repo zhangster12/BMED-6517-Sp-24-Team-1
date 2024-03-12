@@ -1,0 +1,21 @@
+close all;
+clear all;
+clc;
+
+
+% Load an Rpeaks file
+
+filename = 'RRintervals/sub3128/stim0_RRintervals.csv';
+RRintervals = readmatrix(filename);
+
+Fs = 500; % sampling freq. of ECG in Hz
+
+% Choose a 2-min interval over which we will compute HRV features
+
+i = 100;
+
+Rpeaks_seg = Rpeaks(find(80 <= Rpeaks & Rpeaks <= 200));
+
+% Run RRtoHRVDemo. This will output a struct with 26 total features
+
+HRV_feat = RRtoHRVDemo(Rpeaks_seg, Fs);
