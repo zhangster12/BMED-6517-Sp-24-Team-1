@@ -40,9 +40,9 @@ Subj.sort()
 dataframes_MI = []
 dataframes_Ht = []
 dataframes_all = []
-sub_MI = -1;
-sub_Ht = -1;
-sub_all = -1;
+sub_MI = -1
+sub_Ht = -1
+sub_all = -1
 for sub in range(NumSub):
     if str(round(Subj[sub])) in subj_list:
         if str(Subj[sub]).startswith('3'):
