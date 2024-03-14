@@ -1,0 +1,13 @@
+classdef Event
+    
+    % Blood volume levels in hypovolemia study
+    
+    enumeration
+        relBaseline1, relBaseline2, absBaseline1, absBaseline2, ...
+             relative5, relative10, relative20, absDecrease7, ...
+            absDecrease14, absDecrease21, absDecrease28,... 
+        stopBleed7, stopBleed14, stopBleed21,stopBleed28,absIncrease28, ...
+            absIncrease21, absIncrease14, absIncrease7,startMortality
+    end
+    
+end
