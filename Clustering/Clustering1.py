@@ -67,6 +67,7 @@ for sub in range(NumSub):
                     data = pd.read_csv(Feat_load)
                     dataframes_Ht[sub_Ht][stim][feat] = data.values
                     # dataframes_Ht[sub_Ht][stim][feat].append(np.zeros(len(data.values[:,2])))
+                    
 for sub in range(NumSub):
     if str(round(Subj[sub])) in subj_list:
         sub_all = sub_all+1;
