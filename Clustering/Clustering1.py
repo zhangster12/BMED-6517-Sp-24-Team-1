@@ -10,7 +10,7 @@ from IPython import get_ipython
 get_ipython().magic('reset -sf')
 
 # Dir1 = r'C:\Users\jha91\OneDrive - Georgia Institute of Technology\Year1 2024 Spring\BMED 6517 ML Bio\Group project\Data\Consolidated_Features'
-Dir1 = r'C:\Users\Jisoo Ha\OneDrive - Georgia Institute of Technology\Year1 2024 Spring\BMED 6517 ML Bio\Group project\Data\Consolidated_Features'
+Dir1 = '..\Consolidated_Features'
 import os
 import pandas as pd
 import numpy as np
