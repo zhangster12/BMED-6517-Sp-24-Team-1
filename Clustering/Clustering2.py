@@ -9,8 +9,8 @@ Created on Mon Feb 19 22:49:51 2024
 from IPython import get_ipython
 get_ipython().magic('reset -sf')
 
-# Dir1 = r'C:\Users\jha91\OneDrive - Georgia Institute of Technology\Year1 2024 Spring\BMED 6517 ML Bio\Group project\Data\Consolidated_Features'
-Dir1 = r'C:\Users\Jisoo Ha\OneDrive - Georgia Institute of Technology\Year1 2024 Spring\BMED 6517 ML Bio\Group project\Data\Consolidated_Features'
+Dir1 = r'C:\Users\jha91\OneDrive - Georgia Institute of Technology\Year1 2024 Spring\BMED 6517 ML Bio\Group project\Data\Consolidated_Features'
+# Dir1 = r'C:\Users\Jisoo Ha\OneDrive - Georgia Institute of Technology\Year1 2024 Spring\BMED 6517 ML Bio\Group project\Data\Consolidated_Features'
 import os
 import pandas as pd
 import numpy as np
@@ -258,11 +258,44 @@ labels_cleaned = np.delete(labels, outlier_indices[0])
 feats_upc = PCA(n_components=5).fit_transform(feats_cleaned)
 feats_spc = PCA(n_components=5).fit_transform(StandardScaler().fit_transform(feats_cleaned))
 
+
+# Create a colormap based on the number of unique labels
+unique_labels = np.unique(labels_cleaned)
+n_labels = len(unique_labels)
+colormap = plt.cm.get_cmap('viridis', n_labels)  # You can choose your colormap
+
 fig, axes = plt.subplots(1, 2, figsize=(9, 5))
-axes[0].scatter(feats_upc[:, 0], feats_upc[:, 1], c=labels_cleaned)
+
+# Create scatter plots and build a legend
+for i, label in enumerate(unique_labels):
+    # Find the points corresponding to the current label
+    idx = labels_cleaned == label
+    axes[0].scatter(feats_upc[idx, 0], feats_upc[idx, 1], color=colormap(i), label=f'Class {label}')
+    axes[1].scatter(feats_spc[idx, 0], feats_spc[idx, 1], color=colormap(i), label=f'Class {label}')
+
 axes[0].set_title('Unscaled PCA')
-axes[1].scatter(feats_spc[:, 0], feats_spc[:, 1], c=labels_cleaned)
 axes[1].set_title('Scaled PCA')
+
+# Add a legend outside of the plot area
+axes[0].legend() 
+axes[1].legend() 
+
+# axes[0].legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+# axes[1].legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+
+# Adjust layout to make room for the legend
+plt.tight_layout()
+
+plt.show()
+# _____________________
+
+fig, axes = plt.subplots(1, 2, figsize=(9, 5))
+axes[0].scatter(feats_upc[:, 0], feats_upc[:, 1], c=labels_cleaned, label=f'Class {feats_upc[:, 0]}')
+axes[0].set_title('Unscaled PCA')
+axes[0].legend() 
+axes[1].scatter(feats_spc[:, 0], feats_spc[:, 1], c=labels_cleaned, label=f'Class {1}')
+axes[1].set_title('Scaled PCA')
+axes[1].legend() 
 plt.show()
 
 # %% PCA
@@ -270,7 +303,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.decomposition import SparsePCA, KernelPCA
 from sklearn.decomposition import PCA
 
-k=5
+k = 4
 X = feats_cleaned
 y = labels_cleaned
 
@@ -299,9 +332,11 @@ fig, axes = plt.subplots(1,2,figsize=(9,5))
 
 axes[0].scatter(X_PCA[:,0], X_PCA[:,1],c=y)
 axes[0].set_title('PCA')
+# axes[0].legend() 
 
 axes[1].scatter(X_sPCA[:,0], X_sPCA[:,1],c=y)
 axes[1].set_title('Sparse PCA')
+# axes[1].legend() 
 
 # axes[2].scatter(X_lda[:,0], X_lda[:,1],c=y)
 # axes[2].set_title('LDA')
@@ -313,6 +348,45 @@ axes[1].set_title('Sparse PCA')
 # axes[2].set_title('LDA')
 
 plt.show()
+
+# __________________________________ Pairplot
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Assuming X_sPCA is your dataset after Sparse PCA transformation and y is your labels
+n_features = k  # Number of features
+
+# Create a figure with subplots in a 5x5 grid
+fig, axes = plt.subplots(n_features, n_features, figsize=(15,15))  # Adjust figsize accordingly
+
+# Create a color map
+colormap = plt.cm.get_cmap('viridis', len(np.unique(y)))  # Adjust the number of colors as needed
+
+# Iterate over all combinations of features
+for i in range(n_features):
+    for j in range(n_features):
+        # Diagonal elements can be histograms or kdeplots
+        if i == j:
+            sns.histplot(X_sPCA[:,i], ax=axes[i, j], color='skyblue', kde=True)
+        else:
+            # Off-diagonal elements are scatter plots
+            scatter = axes[i, j].scatter(X_sPCA[:,i], X_sPCA[:,j], c=y, cmap=colormap)
+
+        # Hide x labels and tick labels for top plots and y ticks for right plots.
+        if i < n_features - 1:
+            axes[i, j].set_xticks([])
+        if j > 0:
+            axes[i, j].set_yticks([])
+
+# Adjust the layout
+plt.tight_layout()
+
+# Add a color bar
+plt.colorbar(scatter, ax=axes.ravel().tolist(), orientation='vertical')
+
+# Show the plot
+plt.show()
+
 
 # %% TSNE 
 # from sklearn.manifold import TSNE
@@ -355,45 +429,175 @@ print("\nLabels:\n", labels)
 
 import matplotlib.pyplot as plt
 
-# Plotting cluster centers
-# plt.scatter(cluster_centers[:, 0], cluster_centers[:, 1], c='red', marker='x', label='Cluster Centers')
+# # Plotting cluster centers
+# plt.scatter(cluster_centers[:, 0], cluster_centers[:, 1], c='blue', marker='x', label='Cluster Centers')
 
-# Plotting data points with labels
-# for i in range(num_clusters):
-#     cluster_points = X_sPCA[labels == i] # labels_cleaned is the correct label
-#     plt.scatter(cluster_points[:, 0], cluster_points[:, 1], label=f'Cluster {i}')
+# # Plotting data points with labels
+for i in range(num_clusters):
+    cluster_points = X_sPCA[labels == i] # labels_cleaned is the correct label
+    plt.scatter(cluster_points[:, 0], cluster_points[:, 1], cmap=colormap, label=f'Cluster {i}')
 
-plt.xlabel('Feature 1')
-plt.ylabel('Feature 2')
-plt.title('KMeans Clustering Result - sPCA')
-plt.legend()
+# Calculate silhouette score
+from sklearn.metrics import silhouette_score
+silhouette_avg = silhouette_score(X_sPCA, labels)
+print(f"Silhouette Score for KMeans Clustering: {silhouette_avg}")
+
+# plt.xlabel('Feature 1')
+# plt.ylabel('Feature 2')
+# plt.title('KMeans Clustering Result - sPCA')
+# # plt.legend()
+# plt.show()
+
+# __________________________________ Pairplot
+# Assuming 'labels' is the array of cluster labels from kmeans.labels_
+# Assuming 'X_sPCA' is the dataset you've performed PCA on
+
+# Custom color palette
+custom_palette = ['blue', 'orange']  # Add more colors if you have more than two clusters
+
+# Create a dataframe for pair plotting
+df_sPCA = pd.DataFrame(X_sPCA, columns=[f'Feature {i+1}' for i in range(X_sPCA.shape[1])])
+df_sPCA['Cluster'] = labels  # Add the cluster labels as a column in the dataframe
+
+# Create the pair plot using the custom color palette
+pair_plot = sns.pairplot(df_sPCA, hue='Cluster', palette=custom_palette)
+
+# To plot the cluster centers, we iterate over the subplots and add them to each
+for i in range(pair_plot.axes.shape[0]):
+    for j in range(pair_plot.axes.shape[1]):
+        if i != j:
+            pair_plot.axes[i, j].scatter(cluster_centers[:, i], cluster_centers[:, j], 
+                                         s=100, c='red', marker='X', label='Cluster Centers' if (i == 0 and j == 1) else "")
+
+# Adjust the legend location
+# pair_plot._legend.set_bbox_to_anchor((1.05, 1))
+
+# Show the plot
 plt.show()
+# _______________________________________________________________________
 
 # ####### subplots
 fig, axes = plt.subplots(1,2,figsize=(9,5))
 
 axes[0].scatter(X_sPCA[:,0], X_sPCA[:,1],c=y)
 axes[0].set_title('Sparse PCA')
+# axes[0].legend() 
 
 for i in range(num_clusters):
     cluster_points = X_sPCA[labels == i] # labels_cleaned is the correct label
     axes[1].scatter(cluster_points[:, 0], cluster_points[:, 1], label=f'Cluster {i}')
 axes[1].set_title('KMeans Clustering Result - sPCA')
+# axes[1].legend() 
 
 ## check whether the label matches well
 # X_sPCA[:,0&1] - y vs. cluster_points[:,0&1] -  -> match it with labels_cleaned (5273,)
 
 labels_kmeans = labels
 labels_real = np.round(labels_cleaned).astype(int)
-for i in range(labels_real):
-    labels
+# for i in range(labels_real):
+#     labels
 
 # Comparing each label and outputting 1 if they are the same, 0 otherwise
 comparison_results = [1 if kmeans_label == real_label else 0 for kmeans_label, real_label in zip(labels_kmeans, labels_real)]
 
-print("Comparison results:", comparison_results)
+# print("Comparison results:", comparison_results)
 Acc = np.mean(comparison_results)
+print("Accuracy:", Acc)
 
+# %% Spectral clustering
+
+from sklearn.cluster import SpectralClustering
+
+# Define the number of clusters
+num_clusters = 2
+
+# Initialize KMeans model
+kmeans = SpectralClustering(n_clusters=num_clusters)
+
+# Fit the KMeans model to the data
+# kmeans.fit(data_all_1_array)
+kmeans.fit(X_sPCA)
+
+labels = kmeans.labels_
+n_features = kmeans.n_features_in_
+
+
+# Print cluster centers and labels
+print("\nLabels:\n", labels)
+
+import matplotlib.pyplot as plt
+
+# # Plotting cluster centers
+# plt.scatter(cluster_centers[:, 0], cluster_centers[:, 1], c='blue', marker='x', label='Cluster Centers')
+
+# # Plotting data points with labels
+for i in range(num_clusters):
+    cluster_points = X_sPCA[labels == i] # labels_cleaned is the correct label
+    plt.scatter(cluster_points[:, 0], cluster_points[:, 1], cmap=colormap, label=f'Cluster {i}')
+
+# plt.xlabel('Feature 1')
+# plt.ylabel('Feature 2')
+# plt.title('KMeans Clustering Result - sPCA')
+# # plt.legend()
+# plt.show()
+
+# __________________________________ Pairplot
+# Assuming 'labels' is the array of cluster labels from kmeans.labels_
+# Assuming 'X_sPCA' is the dataset you've performed PCA on
+
+# Custom color palette
+custom_palette = ['blue', 'orange']  # Add more colors if you have more than two clusters
+
+# Create a dataframe for pair plotting
+df_sPCA = pd.DataFrame(X_sPCA, columns=[f'Feature {i+1}' for i in range(X_sPCA.shape[1])])
+df_sPCA['Cluster'] = labels  # Add the cluster labels as a column in the dataframe
+
+# Create the pair plot using the custom color palette
+pair_plot = sns.pairplot(df_sPCA, hue='Cluster', palette=custom_palette)
+
+# To plot the cluster centers, we iterate over the subplots and add them to each
+for i in range(pair_plot.axes.shape[0]):
+    for j in range(pair_plot.axes.shape[1]):
+        if i != j:
+            pair_plot.axes[i, j].scatter(cluster_centers[:, i], cluster_centers[:, j], 
+                                         s=100, c='red', marker='X', label='Cluster Centers' if (i == 0 and j == 1) else "")
+
+# Adjust the legend location
+# pair_plot._legend.set_bbox_to_anchor((1.05, 1))
+
+# Show the plot
+plt.show()
+# _______________________________________________________________________
+
+# ####### subplots
+fig, axes = plt.subplots(1,2,figsize=(9,5))
+
+axes[0].scatter(X_sPCA[:,0], X_sPCA[:,1],c=y)
+axes[0].set_title('Sparse PCA')
+# axes[0].legend() 
+
+for i in range(num_clusters):
+    cluster_points = X_sPCA[labels == i] # labels_cleaned is the correct label
+    axes[1].scatter(cluster_points[:, 0], cluster_points[:, 1], label=f'Cluster {i}')
+axes[1].set_title('KMeans Clustering Result - sPCA')
+# axes[1].legend() 
+
+## check whether the label matches well
+# X_sPCA[:,0&1] - y vs. cluster_points[:,0&1] -  -> match it with labels_cleaned (5273,)
+
+labels_kmeans = labels
+labels_real = np.round(labels_cleaned).astype(int)
+# for i in range(labels_real):
+#     labels
+
+# Comparing each label and outputting 1 if they are the same, 0 otherwise
+comparison_results = [1 if kmeans_label == real_label else 0 for kmeans_label, real_label in zip(labels_kmeans, labels_real)]
+
+# print("Comparison results:", comparison_results)
+Acc = np.mean(comparison_results)
+print("Accuracy:", Acc)
+
+#################################################################################################################
 # %% 그나마 제일 그럴듯한 plot (but still don't know the real label - whether it is clustered well or not)
 
 import matplotlib.pyplot as plt
