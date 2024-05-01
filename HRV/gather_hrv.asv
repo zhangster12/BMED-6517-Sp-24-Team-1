@@ -1,0 +1,42 @@
+close all;
+clear all;
+clc;
+
+
+RRinterval_data_path = 'RRintervals/';
+
+RRinterval_data_folder = dir([RRinterval_data_path 'sub*']);
+
+for i = 1:length(RRinterval_data_folder)
+
+    sub_id = RRinterval_data_folder(i).name(1:7);
+
+    HRV_filename = [sub_id '_HRV_feat_all.csv'];
+
+    % Store each HRV feature in a table
+    HRV_feat = table;
+
+    for j = 0:4
+
+        temp = table;
+
+        % Store the stimulus #
+        temp.stim = j;
+
+        % Load the RR intervals
+        RRinterval_filename = [RRinterval_data_path sub_id '/stim' int2str(j) ...
+            '_RRintervals.csv'];
+        RRintervals = readmatrix(RRinterval_filename);
+
+        % Isolate the last two minutes of RR interval data for each stimulus
+        RRinterval_t_end = RRintervals(end, 1);
+        RRinterval_t_start = RRinterval_t_end - 120;
+        RRintervals = RRintervals(find( RRinterval_t_start <= RRintervals(... 
+            ), 2);
+
+        HRV_feat = [HRV_feat; temp];
+    end
+
+    writematrix(RRseg, [feature_folder '/stim' int2str(j-1) '_RRintervals.csv']);
+
+end
